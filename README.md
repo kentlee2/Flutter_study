@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-# flutter_app2
 
 A new Flutter application.
 
@@ -18,4 +16,4 @@ samples, guidance on mobile development, and a full API reference.
 =======
 # Flutter_study
 flutter study
->>>>>>> c4a39770c43d2c3e63d3782d4eb09d67e1d5b039
+
