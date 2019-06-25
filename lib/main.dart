@@ -28,10 +28,7 @@ class ScaffoldRoute extends StatefulWidget {
   _ScaffoldRouteState createState() => _ScaffoldRouteState();
 }
 
-var homepage = HomePage();
-var msgPage = MsgPage();
-var personPage = PersonPage();
-final List pages = [homepage, msgPage, personPage];
+final List<Widget> pages = [HomePage(), MsgPage(), PersonPage()];
 final titles = ["home", "find", "favorite"];
 
 class _ScaffoldRouteState extends State<ScaffoldRoute> {
@@ -66,9 +63,7 @@ class _ScaffoldRouteState extends State<ScaffoldRoute> {
         onTap: _onItemTapped,
       ),
       body: IndexedStack(
-        children: <Widget>[
-          HomePage(),MsgPage(),PersonPage()
-        ],
+        children: pages,
        index: _selectedIndex,
       ),
     );
