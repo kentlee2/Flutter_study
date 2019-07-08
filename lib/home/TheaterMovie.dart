@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:newsApp/bean/MovieEntity.dart';
 import 'package:newsApp/bean/OnlineMovie.dart';
-
+import 'package:newsApp/utils/DbProvider.dart';
+import 'package:sqflite/sqlite_api.dart';
 class TheaterMovie extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -13,16 +14,19 @@ class TheaterMovie extends StatefulWidget {
 
 class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientMixin{
   ScrollController _scrollController = new ScrollController();
-  String loadUrl = "http://douban.uieee.com/v2/movie/in_theaters";
+  DbProvider db  = new DbProvider() ;
+  String loadUrl = "https://douban-api.now.sh/v2/movie/in_theaters"; //http://douban.uieee.com
   bool isPerformingRequest = false;
   List subjects = [];
   String title = '';
   int start = 1;
   int count = 10;
+  final saved = Set<int>();
 
   @override
   void initState() {
     super.initState();
+    db.openSqlite();
     loadData();
     //滑动到底了自动加载更多
     _scrollController.addListener(() {
@@ -49,6 +53,7 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
     OnlineMovie movie = new OnlineMovie.fromJson(result);
     //FlutterJsonBeanFactory插件生成
     MovieEntity entity = new MovieEntity.fromJson(result);
+
     print("请求:" + loadUrl);
     print("start:" + "$start");
     print("count:" + "$count");
@@ -60,6 +65,7 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
   }
 
   _loadMoreData() async {
+
     if (!isPerformingRequest) {
       setState(() => isPerformingRequest = true);
       Response response = await Dio()
@@ -127,6 +133,8 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
   }
 
   getItem(var subject, var index) {
+
+    final alreadySaved = saved.contains(index);
     var avatars = List.generate(subject['casts'].length, (i) {
       if (subject['casts'][i]['avatars'] != null) {
         return Container(
@@ -162,6 +170,7 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
             height: 150.0,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+
               //电影名称
               children: <Widget>[
                 Text(
@@ -169,11 +178,44 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   maxLines: 1,
                 ),
-                //豆瓣评分
-                Text(
-                  '豆瓣评分： ${subject['rating']['average']}',
-                  style: TextStyle(fontSize: 16, color: Colors.red),
+
+                Row(
+                  children: <Widget>[
+                    Text(
+                      '豆瓣评分： ${subject['rating']['average']}',
+                      style: TextStyle(fontSize: 16, color: Colors.red),
+
+                    ),
+                    Container(
+                      child: new GestureDetector(
+                        child:Icon(
+                          alreadySaved ? Icons.favorite : Icons.favorite_border,
+                          color: alreadySaved ? Colors.red : null,
+                        ),
+                        onTap: (){
+                          setState(() {
+                            if (alreadySaved) {
+                              saved.remove(index);
+                            } else {
+                              saved.add(index);
+                              Map map = new Map();
+                              map["id"] =1234;
+                              map["title"] ="标题";
+                              map["rate"] = 2;
+                              map["imgurl"] = "baidu";
+                              MovidBean mm = new MovidBean.fromMap(map);
+                              db.insert(mm);
+                            }
+                          });
+                        },
+                      ),
+                      margin: EdgeInsets.only(left: 58.0),
+                    )
+
+                  ],
                 ),
+                //豆瓣评分
+
                 //类型
                 Text("类型：${subject['genres'].join("、")}"),
                 //导演
