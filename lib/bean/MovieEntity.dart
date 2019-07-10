@@ -46,7 +46,7 @@ class MovieSubject {
 	List<String> genres;
 	List<String> durations;
 	String mainlandPubdate;
-	String id;
+	int id;
 
 	MovieSubject({this.images, this.originalTitle, this.year, this.directors, this.rating, this.alt, this.title, this.collectCount, this.hasVideo, this.pubdates, this.casts, this.subtype, this.genres, this.durations, this.mainlandPubdate, this.id});
 
@@ -70,7 +70,7 @@ class MovieSubject {
 		genres = json['genres']?.cast<String>();
 		durations = json['durations']?.cast<String>();
 		mainlandPubdate = json['mainland_pubdate'];
-		id = json['id'];
+		id = int.parse(json['id']);
 	}
 
 	Map<String, dynamic> toJson() {
@@ -178,7 +178,7 @@ class MovieSubjectsDirectorsAvatars {
 }
 
 class MovieSubjectsRating {
-	String average;
+	var average;
 	int min;
 	int max;
 	MovieSubjectsRatingDetails details;
@@ -187,7 +187,7 @@ class MovieSubjectsRating {
 	MovieSubjectsRating({this.average, this.min, this.max, this.details, this.stars});
 
 	MovieSubjectsRating.fromJson(Map<String, dynamic> json) {
-		average = json['average'].toString();
+		average = json['average'];
 		min = json['min'];
 		max = json['max'];
 		details = json['details'] != null ? new MovieSubjectsRatingDetails.fromJson(json['details']) : null;

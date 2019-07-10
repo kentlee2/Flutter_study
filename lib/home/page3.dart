@@ -5,7 +5,7 @@ class page3 extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<page3> {
+class _LoginPageState extends State<page3>  with AutomaticKeepAliveClientMixin{
   /**
    * 利用FocusNode和FocusScopeNode来控制焦点
    * 可以通过FocusNode.of(context)来获取widget树中默认的FocusScopeNode
@@ -16,6 +16,7 @@ class _LoginPageState extends State<page3> {
   bool isShowPassWord = false;
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return buildSignInTextForm();
   }
   /**
@@ -107,4 +108,6 @@ class _LoginPageState extends State<page3> {
     );
 
   }
+  @override
+  bool get wantKeepAlive => true;
 }

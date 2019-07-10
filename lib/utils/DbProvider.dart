@@ -27,6 +27,7 @@ class DbProvider {
 
   //插入数据
   Future<MovidBean> insert(MovidBean todo) async {
+    openSqlite();
     todo.id = await db.insert(tableName, todo.toMap());
     return todo;
   }
@@ -35,17 +36,18 @@ class DbProvider {
   Future<List<MovidBean>> getData() async {
     List<Map> maps =
         await db.query(tableName, columns: [ "id","title", "rate", "imgurl"]);
+    List<MovidBean> movieList = new List<MovidBean>();
     if (maps == null || maps.length == 0) {
-      return null;
+      return movieList;
     }
-    List<MovidBean> books = [];
     for (int i = 0; i < maps.length; i++) {
-      books.add(MovidBean.fromMap(maps[i]));
+      movieList.add(MovidBean.fromMap(maps[i]));
     }
-    return books;
+    return movieList;
   }
 
   Future<int> delete(int id) async {
+    openSqlite();
     return await db.delete(tableName, where: "id = ?", whereArgs: [id]);
   }
 
@@ -55,8 +57,9 @@ class DbProvider {
 class MovidBean {
   int id;
   String title;
-  int rate;
+  var rate;
   String imgurl;
+  MovidBean(var this.id, this.title,var this.rate, this.imgurl);
 
   Map<String,dynamic> toMap() {
     Map<String,dynamic> map = {"id" :id,"title": title, "rate": rate, "imgurl": imgurl};

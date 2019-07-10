@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:newsApp/bean/MovieEntity.dart';
 import 'package:newsApp/bean/OnlineMovie.dart';
 import 'package:newsApp/utils/DbProvider.dart';
-import 'package:sqflite/sqlite_api.dart';
 class TheaterMovie extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -17,11 +16,11 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
   DbProvider db  = new DbProvider() ;
   String loadUrl = "https://douban-api.now.sh/v2/movie/in_theaters"; //http://douban.uieee.com
   bool isPerformingRequest = false;
-  List subjects = [];
+  List<MovidBean> movieList = new List<MovidBean>();
+  List<MovieSubject> subjects = [];
   String title = '';
   int start = 1;
-  int count = 10;
-  final saved = Set<int>();
+  int count = 5;
 
   @override
   void initState() {
@@ -53,14 +52,14 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
     OnlineMovie movie = new OnlineMovie.fromJson(result);
     //FlutterJsonBeanFactory插件生成
     MovieEntity entity = new MovieEntity.fromJson(result);
-
+    movieList = await db.getData();
     print("请求:" + loadUrl);
     print("start:" + "$start");
     print("count:" + "$count");
     print(result);
     setState(() {
-      title = result['title'];
-      subjects = result['subjects'];
+      title = entity.title;
+      subjects = entity.subjects;
     });
   }
 
@@ -72,6 +71,7 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
           .get(loadUrl, queryParameters: {"start": start, "count": count});
       if (response.statusCode == 200) {
         var result = new Map<String, dynamic>.from(response.data);
+        MovieEntity entity = new MovieEntity.fromJson(result);
         double edge = 50.0;
         double offsetFromBottom = _scrollController.position.maxScrollExtent -
             _scrollController.position.pixels;
@@ -84,7 +84,7 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
 
         print(result);
         setState(() {
-          subjects.addAll(result['subjects']);
+          subjects.addAll(entity.subjects);
           isPerformingRequest = false;
         });
       }
@@ -106,6 +106,7 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (subjects.length != 0) {
       //下划线widget预定义以供复用。
       Widget divider = Divider(color: Colors.grey[300]);
@@ -115,7 +116,6 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
         //列表项构造器
         itemBuilder: (BuildContext context, int index) {
           print("滑动到了:$index");
-          print("大小:${subjects.length}");
           if (index == subjects.length - 1) {
             return _buildProgressIndicator();
           }
@@ -132,17 +132,25 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
     }
   }
 
-  getItem(var subject, var index) {
+  getItem(MovieSubject subject, var index) {
+    bool alreadySaved=false;
+    movieList.forEach((e){
+      if(e.id==subject.id){
+        alreadySaved = true;
+      }
 
-    final alreadySaved = saved.contains(index);
-    var avatars = List.generate(subject['casts'].length, (i) {
-      if (subject['casts'][i]['avatars'] != null) {
+    });
+   print(alreadySaved);
+
+
+    var avatars = List.generate(subject.casts.length, (i) {
+      if (subject.casts[i].avatars != null) {
         return Container(
             margin: EdgeInsets.only(left: i.toDouble() == 0.0 ? 0.0 : 16.0),
             child: CircleAvatar(
                 backgroundColor: Colors.white10,
                 backgroundImage:
-                    NetworkImage(subject['casts'][i]['avatars']['small'])));
+                    NetworkImage(subject.casts[i].avatars.small)));
       } else {
         return Container(
             margin: EdgeInsets.only(left: i.toDouble() == 0.0 ? 0.0 : 16.0),
@@ -158,7 +166,7 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
           ClipRRect(
             borderRadius: BorderRadius.circular(4.0),
             child: Image.network(
-              subject['images']['large'],
+              subject.images.large,
               width: 100.0,
               height: 150,
               fit: BoxFit.fill,
@@ -174,7 +182,7 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
               //电影名称
               children: <Widget>[
                 Text(
-                  subject['title'],
+                  subject.title,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   maxLines: 1,
                 ),
@@ -182,7 +190,7 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
                 Row(
                   children: <Widget>[
                     Text(
-                      '豆瓣评分： ${subject['rating']['average']}',
+                      '豆瓣评分： ${subject.rating.average}',
                       style: TextStyle(fontSize: 16, color: Colors.red),
 
                     ),
@@ -194,18 +202,15 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
                         ),
                         onTap: (){
                           setState(() {
+                            MovidBean movidBean = MovidBean(subject.id, subject.title, subject.rating.average, subject.images.medium);
                             if (alreadySaved) {
-                              saved.remove(index);
+                              movieList.removeAt(index);
+                              db.delete(subject.id);
                             } else {
-                              saved.add(index);
-                              Map map = new Map();
-                              map["id"] =1234;
-                              map["title"] ="标题";
-                              map["rate"] = 2;
-                              map["imgurl"] = "baidu";
-                              MovidBean mm = new MovidBean.fromMap(map);
-                              db.insert(mm);
+                              movieList.add(movidBean);
+                              db.insert(movidBean);
                             }
+                            db.close();
                           });
                         },
                       ),
@@ -217,9 +222,9 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
                 //豆瓣评分
 
                 //类型
-                Text("类型：${subject['genres'].join("、")}"),
+                Text("类型：${subject.genres.join("、")}"),
                 //导演
-                Text('导演：${subject['directors'][0]['name']}'),
+                Text('导演：${subject.directors[0].name}'),
                 //演员
                 Container(
                   margin: EdgeInsets.only(top: 8),
@@ -243,7 +248,7 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
       child: new InkWell(
         child: row,
         onTap: () {
-          print(subject['title']);
+          print(subject.title);
         },
       ),
     );

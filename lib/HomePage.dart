@@ -17,7 +17,7 @@ class _MyHomeAppState extends State<HomePage>
   TabController _tabController;
   List<Tab> titleTabs = <Tab>[
     Tab(text: '院线'),
-    Tab(text: '想看'),
+    Tab(text: '喜欢'),
     Tab(text: '发现'),
   ];
   List<Widget> tabViews = [TheaterMovie(), page2(), page3()];
@@ -72,4 +72,6 @@ class _MyHomeAppState extends State<HomePage>
     );
     return tabView;
   }
+
 }
+
