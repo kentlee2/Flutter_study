@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:newsApp/bean/MovieEntity.dart';
 import 'package:newsApp/bean/OnlineMovie.dart';
 import 'package:newsApp/utils/DbProvider.dart';
+
 class TheaterMovie extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -11,10 +12,13 @@ class TheaterMovie extends StatefulWidget {
   }
 }
 
-class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientMixin{
+class MovieListWidget extends State<TheaterMovie>
+    with AutomaticKeepAliveClientMixin {
   ScrollController _scrollController = new ScrollController();
-  DbProvider db  = new DbProvider() ;
-  String loadUrl = "https://douban-api.now.sh/v2/movie/in_theaters"; //http://douban.uieee.com
+  DbProvider db = new DbProvider();
+
+  String loadUrl =
+      "https://douban-api.now.sh/v2/movie/in_theaters"; //http://douban.uieee.com
   bool isPerformingRequest = false;
   List<MovidBean> movieList = new List<MovidBean>();
   List<MovieSubject> subjects = [];
@@ -64,7 +68,6 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
   }
 
   _loadMoreData() async {
-
     if (!isPerformingRequest) {
       setState(() => isPerformingRequest = true);
       Response response = await Dio()
@@ -133,15 +136,13 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
   }
 
   getItem(MovieSubject subject, var index) {
-    bool alreadySaved=false;
-    movieList.forEach((e){
-      if(e.id==subject.id){
+    bool alreadySaved = false;
+    movieList.forEach((e) {
+      if (e.id == subject.id) {
         alreadySaved = true;
       }
-
     });
-   print(alreadySaved);
-
+    print(alreadySaved);
 
     var avatars = List.generate(subject.casts.length, (i) {
       if (subject.casts[i].avatars != null) {
@@ -149,8 +150,7 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
             margin: EdgeInsets.only(left: i.toDouble() == 0.0 ? 0.0 : 16.0),
             child: CircleAvatar(
                 backgroundColor: Colors.white10,
-                backgroundImage:
-                    NetworkImage(subject.casts[i].avatars.small)));
+                backgroundImage: NetworkImage(subject.casts[i].avatars.small)));
       } else {
         return Container(
             margin: EdgeInsets.only(left: i.toDouble() == 0.0 ? 0.0 : 16.0),
@@ -192,17 +192,20 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
                     Text(
                       '豆瓣评分： ${subject.rating.average}',
                       style: TextStyle(fontSize: 16, color: Colors.red),
-
                     ),
                     Container(
                       child: new GestureDetector(
-                        child:Icon(
+                        child: Icon(
                           alreadySaved ? Icons.favorite : Icons.favorite_border,
                           color: alreadySaved ? Colors.red : null,
                         ),
-                        onTap: (){
+                        onTap: () {
                           setState(() {
-                            MovidBean movidBean = MovidBean(subject.id, subject.title, subject.rating.average, subject.images.medium);
+                            MovidBean movidBean = MovidBean(
+                                subject.id,
+                                subject.title,
+                                subject.rating.average,
+                                subject.images.medium);
                             if (alreadySaved) {
                               movieList.removeAt(index);
                               db.delete(subject.id);
@@ -216,7 +219,6 @@ class MovieListWidget extends State<TheaterMovie> with AutomaticKeepAliveClientM
                       ),
                       margin: EdgeInsets.only(left: 58.0),
                     )
-
                   ],
                 ),
                 //豆瓣评分

@@ -14,7 +14,9 @@ class HomePage extends StatefulWidget {
 
 class _MyHomeAppState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
+  PageController mPageController = PageController(initialPage: 0);
+  TabController mTabController;
+  bool isPageCanChanged = true;
   List<Tab> titleTabs = <Tab>[
     Tab(text: '院线'),
     Tab(text: '喜欢'),
@@ -26,27 +28,30 @@ class _MyHomeAppState extends State<HomePage>
   void initState() {
     super.initState();
 
-    _tabController = new TabController(vsync: this, length: 3);
-    _tabController.addListener(() {
-      if (_tabController.indexIsChanging) {
-        switch (_tabController.index) {
-          case 0:
-            print(0);
-            break;
-          case 1:
-            print(1);
-            break;
-          case 2:
-            print(2);
-            break;
-        }
+    mTabController = new TabController(vsync: this, length: titleTabs.length);
+    mTabController.addListener(() {
+      if (mTabController.indexIsChanging) {
+        onPageChange(mTabController.index, p: mPageController);
       }
     });
   }
 
+  onPageChange(int index, {PageController p, TabController t}) async {
+    if (p != null) {
+      //判断是哪一个切换
+      isPageCanChanged = false;
+      await mPageController.animateToPage(index,
+          duration: Duration(milliseconds: 500),
+          curve: Curves.ease); //等待pageview切换完毕,再释放pageivew监听
+      isPageCanChanged = true;
+    } else {
+      mTabController.animateTo(index); //切换Tabbar
+    }
+  }
+
   @override
   void dispose() {
-    _tabController.dispose();
+    mTabController.dispose();
     super.dispose();
   }
 
@@ -54,24 +59,34 @@ class _MyHomeAppState extends State<HomePage>
   Widget build(BuildContext context) {
     Widget tabView = new Column(
       children: <Widget>[
-        new Container(
+        Container(
           child: new TabBar(
             labelColor: Colors.blue,
             unselectedLabelColor: Color(0xff666666),
             tabs: titleTabs,
-            controller: _tabController,
+            controller: mTabController,
+            onTap: (index) {
+              return tabViews[index];
+            },
           ),
         ),
-        new Expanded(
-          child: TabBarView(
-            children: tabViews,
-            controller: _tabController,
+        Expanded(
+          child: PageView.builder(
+            itemCount: titleTabs.length,
+            controller: mPageController,
+            onPageChanged: (index) {
+              if (isPageCanChanged) {
+                //由于pageview切换是会回调这个方法,又会触发切换tabbar的操作,所以定义一个flag,控制pageview的回调
+                onPageChange(index);
+              }
+            },
+            itemBuilder: (BuildContext context, int index) {
+              return tabViews[index];
+            },
           ),
         )
       ],
     );
     return tabView;
   }
-
 }
-
