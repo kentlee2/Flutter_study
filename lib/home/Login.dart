@@ -32,7 +32,7 @@ class LoginPage extends State<Login> {
               key: _formKey, //设置globalKey，用于后面获取FormState
               autovalidate: false, //开启自动校验
               child: Padding(
-                padding: const EdgeInsets.all(28),
+                padding: const EdgeInsets.all(20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,7 +72,7 @@ class LoginPage extends State<Login> {
                       },
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 28),
+                      padding: const EdgeInsets.only(top: 20),
                       child: Row(
                         children: <Widget>[
                           Expanded(

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:newsApp/utils/DbProvider.dart';
+import 'package:newsApp/utils/eventBus.dart';
 
-class page2 extends StatefulWidget {
+class Collect extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return LocalListWidget();
   }
 }
 
-class LocalListWidget extends State<page2> with AutomaticKeepAliveClientMixin {
+class LocalListWidget extends State<Collect> with AutomaticKeepAliveClientMixin {
   DbProvider db = new DbProvider();
 
   List<MovidBean> beanList = new List<MovidBean>();
@@ -27,7 +28,11 @@ class LocalListWidget extends State<page2> with AutomaticKeepAliveClientMixin {
         itemCount: beanList.length);
   }
 
-  getItem(MovidBean bean, int index) {}
+  getItem(MovidBean bean, int index) {
+    return Container(
+      child: Text(bean.title),
+    );
+  }
 
   @override
   void initState() {
@@ -38,8 +43,25 @@ class LocalListWidget extends State<page2> with AutomaticKeepAliveClientMixin {
   }
 
   void getData() async {
-    beanList = await db.getData();
-    await db.close();
+    var beanList = await db.getData();
+    setState(() {
+      this.beanList = beanList;
+    });
+    eventBus.on<TransEvent>().listen((TransEvent data){
+        MovidBean mBean = data.bean;
+        if(data.isAdd){
+          beanList.add(mBean);
+        }else{
+          var temp ;
+          beanList.forEach((e){
+            if(e.id==mBean.id){
+              temp = e;
+            }
+          });
+          beanList.remove(temp);
+        }
+        setState(() {});
+    });
   }
 
   @override

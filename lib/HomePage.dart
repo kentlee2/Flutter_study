@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home/TheaterMovie.dart';
-import 'home/page2.dart';
+import 'home/Collect.dart';
 import 'home/page3.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,7 +22,7 @@ class _MyHomeAppState extends State<HomePage>
     Tab(text: '喜欢'),
     Tab(text: '发现'),
   ];
-  List<Widget> tabViews = [TheaterMovie(), page2(), page3()];
+  List<Widget> tabViews = [TheaterMovie(), Collect(), page3()];
 
   @override
   void initState() {

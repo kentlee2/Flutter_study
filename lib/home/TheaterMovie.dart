@@ -4,7 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:newsApp/bean/MovieEntity.dart';
 import 'package:newsApp/bean/OnlineMovie.dart';
 import 'package:newsApp/utils/DbProvider.dart';
-
+import 'package:event_bus/event_bus.dart';
+import 'package:newsApp/utils/eventBus.dart';
 class TheaterMovie extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -207,13 +208,23 @@ class MovieListWidget extends State<TheaterMovie>
                                 subject.rating.average,
                                 subject.images.medium);
                             if (alreadySaved) {
-                              movieList.removeAt(index);
+                              MovidBean tmp;
+                              movieList.forEach((bean) {
+                               if( bean.id == subject.id){
+                                  tmp = bean;
+                                }
+                              });
+                              if(tmp!=null){
+                                movieList.remove(tmp);
+                              }
                               db.delete(subject.id);
+                              eventBus.fire(new TransEvent(movidBean,false));
                             } else {
                               movieList.add(movidBean);
                               db.insert(movidBean);
+                              eventBus.fire(new TransEvent(movidBean,true));
                             }
-                            db.close();
+
                           });
                         },
                       ),

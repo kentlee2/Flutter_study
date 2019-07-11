@@ -10,10 +10,13 @@ class PersonPage extends StatelessWidget {
         children: <Widget>[
           FlatButton(
             onPressed: () => {},
-            child: Text("fdsfds"),
+            child: Text("fdsfds",style: TextStyle(color: Colors.white) ,),
             color: Colors.blue,
             highlightColor: Colors.blue[700],
             colorBrightness: Brightness.light,
+          ),
+          Padding(
+           padding: EdgeInsets.only(left: 20),
           ),
           FlatButton(
             onPressed: () => {

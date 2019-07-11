@@ -27,7 +27,6 @@ class DbProvider {
 
   //插入数据
   Future<MovidBean> insert(MovidBean todo) async {
-    openSqlite();
     todo.id = await db.insert(tableName, todo.toMap());
     return todo;
   }
@@ -47,7 +46,6 @@ class DbProvider {
   }
 
   Future<int> delete(int id) async {
-    openSqlite();
     return await db.delete(tableName, where: "id = ?", whereArgs: [id]);
   }
 
