@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:newsApp/bean/MovieEntity.dart';
 import 'package:newsApp/bean/OnlineMovie.dart';
 import 'package:newsApp/utils/DbProvider.dart';
-import 'package:event_bus/event_bus.dart';
 import 'package:newsApp/utils/eventBus.dart';
 class TheaterMovie extends StatefulWidget {
   @override
@@ -25,7 +24,7 @@ class MovieListWidget extends State<TheaterMovie>
   List<MovieSubject> subjects = [];
   String title = '';
   int start = 1;
-  int count = 5;
+  int count = 10;
 
   @override
   void initState() {

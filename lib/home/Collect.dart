@@ -9,7 +9,8 @@ class Collect extends StatefulWidget {
   }
 }
 
-class LocalListWidget extends State<Collect> with AutomaticKeepAliveClientMixin {
+class LocalListWidget extends State<Collect>
+    with AutomaticKeepAliveClientMixin {
   DbProvider db = new DbProvider();
 
   List<MovidBean> beanList = new List<MovidBean>();
@@ -30,7 +31,37 @@ class LocalListWidget extends State<Collect> with AutomaticKeepAliveClientMixin 
 
   getItem(MovidBean bean, int index) {
     return Container(
-      child: Text(bean.title),
+      child: Container(
+        margin: EdgeInsets.only(left: 8.0),
+        height: 150.0,
+        child: Row(
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4.0),
+              child: Image.network(
+                bean.imgurl,
+                width: 100,
+                height: 150,
+                fit: BoxFit.fill,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 4),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  bean.title,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  maxLines: 1,
+                ),
+                Text("评分：" + bean.rate.toString()),
+              ],
+            )
+          ],
+        ),
+      ),
     );
   }
 
@@ -47,20 +78,20 @@ class LocalListWidget extends State<Collect> with AutomaticKeepAliveClientMixin 
     setState(() {
       this.beanList = beanList;
     });
-    eventBus.on<TransEvent>().listen((TransEvent data){
-        MovidBean mBean = data.bean;
-        if(data.isAdd){
-          beanList.add(mBean);
-        }else{
-          var temp ;
-          beanList.forEach((e){
-            if(e.id==mBean.id){
-              temp = e;
-            }
-          });
-          beanList.remove(temp);
-        }
-        setState(() {});
+    eventBus.on<TransEvent>().listen((TransEvent data) {
+      MovidBean mBean = data.bean;
+      if (data.isAdd) {
+        beanList.add(mBean);
+      } else {
+        var temp;
+        beanList.forEach((e) {
+          if (e.id == mBean.id) {
+            temp = e;
+          }
+        });
+        beanList.remove(temp);
+      }
+      setState(() {});
     });
   }
 

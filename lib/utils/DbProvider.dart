@@ -1,7 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-import 'dart:typed_data';
-import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -19,7 +16,7 @@ class DbProvider {
         onCreate: (Database db, int version) async {
         print('db created version is $version');
       await db.execute(
-          "create table movieInfo (id INTEGER PRIMARY KEY, title TEXT NOT NULL, rate INTEGER NOT NULL, imgurl )");
+          "create table movieInfo (id INTEGER PRIMARY KEY, title TEXT NOT NULL, rate INTEGER NOT NULL, imgurl TEXT )");
     }, onOpen: (Database db) async {
        print('new db opened');
     });
