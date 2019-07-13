@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:newsApp/bean/MovieEntity.dart';
-import 'package:newsApp/bean/OnlineMovie.dart';
 import 'package:newsApp/utils/DbProvider.dart';
+import 'package:newsApp/utils/HttpUtil.dart';
 import 'package:newsApp/utils/eventBus.dart';
 class TheaterMovie extends StatefulWidget {
   @override
@@ -24,7 +24,7 @@ class MovieListWidget extends State<TheaterMovie>
   List<MovieSubject> subjects = [];
   String title = '';
   int start = 1;
-  int count = 10;
+  int count = 20;
 
   @override
   void initState() {
@@ -50,10 +50,11 @@ class MovieListWidget extends State<TheaterMovie>
   void loadData() async {
     Response response = await Dio()
         .get(loadUrl, queryParameters: {"start": start, "count": count});
+    var data = {'start': start, 'count': count};
+    var response2 = await HttpUtil.getInstance().get("in_theaters",data: data);
+    print(response2);
     var result = new Map<String, dynamic>.from(response.data);
-//    var jsonResponse = json.decode(response.data);
-    //基本的json解析方法
-    OnlineMovie movie = new OnlineMovie.fromJson(result);
+
     //FlutterJsonBeanFactory插件生成
     MovieEntity entity = new MovieEntity.fromJson(result);
     movieList = await db.getData();
