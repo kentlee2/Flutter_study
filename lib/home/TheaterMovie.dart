@@ -5,6 +5,7 @@ import 'package:newsApp/bean/MovieEntity.dart';
 import 'package:newsApp/utils/DbProvider.dart';
 import 'package:newsApp/utils/HttpUtil.dart';
 import 'package:newsApp/utils/eventBus.dart';
+
 class TheaterMovie extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -51,7 +52,7 @@ class MovieListWidget extends State<TheaterMovie>
     Response response = await Dio()
         .get(loadUrl, queryParameters: {"start": start, "count": count});
     var data = {'start': start, 'count': count};
-    var response2 = await HttpUtil.getInstance().get("in_theaters",data: data);
+    var response2 = await HttpUtil.getInstance().get("in_theaters", data: data);
     print(response2);
     var result = new Map<String, dynamic>.from(response.data);
 
@@ -160,6 +161,16 @@ class MovieListWidget extends State<TheaterMovie>
             ));
       }
     });
+    List directors = new List<String>();
+    subject.directors.forEach((d) {
+      var name = d.name;
+      directors.add(name);
+    });
+    List avatarLists = new List<String>();
+    subject.casts.forEach((d) {
+      var name = d.avatars;
+      avatarLists.add(name.medium);
+    });
     var row = Container(
       margin: EdgeInsets.all(4.0),
       child: Row(
@@ -179,7 +190,6 @@ class MovieListWidget extends State<TheaterMovie>
             height: 150.0,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-
               //电影名称
               children: <Widget>[
                 Text(
@@ -206,25 +216,27 @@ class MovieListWidget extends State<TheaterMovie>
                                 subject.id,
                                 subject.title,
                                 subject.rating.average,
-                                subject.images.medium);
+                                subject.images.medium,
+                                subject.genres.join("、"),
+                                directors.join("、"),
+                                avatarLists.join("、"));
                             if (alreadySaved) {
                               MovidBean tmp;
                               movieList.forEach((bean) {
-                               if( bean.id == subject.id){
+                                if (bean.id == subject.id) {
                                   tmp = bean;
                                 }
                               });
-                              if(tmp!=null){
+                              if (tmp != null) {
                                 movieList.remove(tmp);
                               }
                               db.delete(subject.id);
-                              eventBus.fire(new TransEvent(movidBean,false));
+                              eventBus.fire(new TransEvent(movidBean, false));
                             } else {
                               movieList.add(movidBean);
                               db.insert(movidBean);
-                              eventBus.fire(new TransEvent(movidBean,true));
+                              eventBus.fire(new TransEvent(movidBean, true));
                             }
-
                           });
                         },
                       ),
@@ -237,7 +249,7 @@ class MovieListWidget extends State<TheaterMovie>
                 //类型
                 Text("类型：${subject.genres.join("、")}"),
                 //导演
-                Text('导演：${subject.directors[0].name}'),
+                Text('导演：${directors.join("、")}'),
                 //演员
                 Container(
                   margin: EdgeInsets.only(top: 8),

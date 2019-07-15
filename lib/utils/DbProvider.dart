@@ -14,11 +14,11 @@ class DbProvider {
     //根据数据库文件路径和数据库版本号创建数据库表
     db = await openDatabase(path, version: 1,
         onCreate: (Database db, int version) async {
-        print('db created version is $version');
+      print('db created version is $version');
       await db.execute(
-          "create table movieInfo (id INTEGER PRIMARY KEY, title TEXT NOT NULL, rate INTEGER NOT NULL, imgurl TEXT )");
+          "create table movieInfo (id INTEGER PRIMARY KEY, title TEXT NOT NULL, rate INTEGER NOT NULL, imgurl TEXT, movieType TEXT, director TEXT, actor TEXT)");
     }, onOpen: (Database db) async {
-       print('new db opened');
+      print('new db opened');
     });
   }
 
@@ -30,8 +30,15 @@ class DbProvider {
 
   //获取数据
   Future<List<MovidBean>> getData() async {
-    List<Map> maps =
-        await db.query(tableName, columns: [ "id","title", "rate", "imgurl"]);
+    List<Map> maps = await db.query(tableName, columns: [
+      "id",
+      "title",
+      "rate",
+      "imgurl",
+      "movieType",
+      "director",
+      "actor"
+    ]);
     List<MovidBean> movieList = new List<MovidBean>();
     if (maps == null || maps.length == 0) {
       return movieList;
@@ -54,13 +61,22 @@ class MovidBean {
   String title;
   var rate;
   String imgurl;
-  MovidBean(var this.id, this.title,var this.rate, this.imgurl);
+  String movieType;
+  String director;
+  String actor;
+  MovidBean(var this.id, this.title, var this.rate, this.imgurl,this.movieType,this.director,this.actor);
 
-  Map<String,dynamic> toMap() {
-    Map<String,dynamic> map = {"id" :id,"title": title, "rate": rate, "imgurl": imgurl};
-    if (id != null) {
-      map["id"] = id;
-    }
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> map = {
+      "id": id,
+      "title": title,
+      "rate": rate,
+      "imgurl": imgurl,
+      "movieType": movieType,
+      "director": director,
+      "actor": actor
+    };
+
     return map;
   }
 
@@ -69,5 +85,8 @@ class MovidBean {
     title = map["title"];
     rate = map["rate"];
     imgurl = map["imgurl"];
+    movieType = map["movieType"];
+    director = map["director"];
+    actor = map["actor"];
   }
 }

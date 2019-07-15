@@ -9,7 +9,7 @@ class HttpUtil {
   BaseOptions options;
 
   CancelToken cancelToken = new CancelToken();
-  static String baseUrl ="https://douban-api.now.sh/v2/movie/";
+  static String baseUrl = "https://douban-api.now.sh/v2/movie/";
 
   static HttpUtil getInstance() {
     if (null == instance) instance = new HttpUtil();
@@ -45,7 +45,8 @@ class HttpUtil {
     dio.interceptors.add(CookieManager(CookieJar()));
 
     //添加拦截器
-    dio.interceptors.add(InterceptorsWrapper(onRequest: (RequestOptions options) {
+    dio.interceptors
+        .add(InterceptorsWrapper(onRequest: (RequestOptions options) {
       print("请求之前");
       // Do something before request is sent
       return options; //continue
@@ -66,7 +67,8 @@ class HttpUtil {
   get(url, {data, options, cancelToken}) async {
     Response response;
     try {
-      response = await dio.get(url, queryParameters: data, options: options, cancelToken: cancelToken);
+      response = await dio.get(url,
+          queryParameters: data, options: options, cancelToken: cancelToken);
       print('get success---------${response.statusCode}');
       print('get success---------${response.data}');
       print('get success---------${response.request}');
@@ -89,7 +91,8 @@ class HttpUtil {
   post(url, {data, options, cancelToken}) async {
     Response response;
     try {
-      response = await dio.post(url, queryParameters: data, options: options, cancelToken: cancelToken);
+      response = await dio.post(url,
+          queryParameters: data, options: options, cancelToken: cancelToken);
       print('get success---------${response.statusCode}');
       print('post success---------${response.data}');
       print('get success---------${response.request}');
@@ -106,7 +109,8 @@ class HttpUtil {
   downloadFile(urlPath, savePath) async {
     Response response;
     try {
-      response = await dio.download(urlPath, savePath,onReceiveProgress: (int count, int total){
+      response = await dio.download(urlPath, savePath,
+          onReceiveProgress: (int count, int total) {
         //进度
         print("$count $total");
       });

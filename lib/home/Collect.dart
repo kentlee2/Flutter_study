@@ -30,6 +30,14 @@ class LocalListWidget extends State<Collect>
   }
 
   getItem(MovidBean bean, int index) {
+    var avatarStr = bean.actor.split("、");
+    var avatars = List.generate(avatarStr.length, (i) {
+      return Container(
+          margin: EdgeInsets.only(left: i.toDouble() == 0.0 ? 0.0 : 16.0),
+          child: CircleAvatar(
+              backgroundColor: Colors.white10,
+              backgroundImage: NetworkImage(avatarStr[i])));
+    });
     return Container(
       child: Container(
         margin: EdgeInsets.only(left: 8.0),
@@ -45,20 +53,49 @@ class LocalListWidget extends State<Collect>
                 fit: BoxFit.fill,
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(left: 4),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  bean.title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                  maxLines: 1,
-                ),
-                Text("评分：" + bean.rate.toString()),
-              ],
-            )
+            Expanded(
+                child: Container(
+              margin: EdgeInsets.only(left: 8.0),
+              height: 150.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                //电影名称
+                children: <Widget>[
+                  Text(
+                    bean.title,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    maxLines: 1,
+                  ),
+
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        '豆瓣评分： ${bean.rate}',
+                        style: TextStyle(fontSize: 16, color: Colors.red),
+                      ),
+                    ],
+                  ),
+                  //豆瓣评分
+
+                  //类型
+                  Text("类型：${bean.movieType}"),
+                  //导演
+                  Text('导演：${bean.director}'),
+                  //演员
+                  Container(
+                    margin: EdgeInsets.only(top: 8),
+                    child: Row(
+                      children: <Widget>[
+                        Text('主演：'),
+                        Row(
+                          children: avatars,
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ))
           ],
         ),
       ),
