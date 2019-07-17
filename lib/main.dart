@@ -33,13 +33,13 @@ final titles = ["home", "find", "favorite"];
 
 class _ScaffoldRouteState extends State<ScaffoldRoute> {
   int _selectedIndex = 0;
+  PageController mPageController = new PageController(initialPage: 0);
 
   @override
   void initState() {
     super.initState();
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -50,28 +50,39 @@ class _ScaffoldRouteState extends State<ScaffoldRoute> {
           IconButton(icon: Icon(Icons.share), onPressed: () {})
         ],
       ),
+      body: PageView.builder(
+          itemCount: pages.length,
+          controller: mPageController,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (BuildContext context, int index) {
+            return pages[index];
+          }),
       bottomNavigationBar: BottomNavigationBar(
         // 底部导航
         items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text(titles[0])),
-          BottomNavigationBarItem(icon: Icon(Icons.mail), title: Text(titles[1])),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite), title: Text(titles[2]))
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home), title: Text(titles[0])),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.mail), title: Text(titles[1])),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.favorite), title: Text(titles[2]))
         ],
         currentIndex: _selectedIndex,
         type: BottomNavigationBarType.fixed,
         fixedColor: Colors.blue,
         onTap: _onItemTapped,
       ),
-      body: IndexedStack(
-        children: pages,
-       index: _selectedIndex,
-      ),
+//      body: IndexedStack(
+//        children: pages,
+//        index: _selectedIndex,
+//      ),
     );
   }
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      this._selectedIndex = index;
+      mPageController.jumpToPage(index);
     });
   }
 }

@@ -6,7 +6,7 @@ class PersonPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Container(
       child: new Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           FlatButton(
             onPressed: () => {},

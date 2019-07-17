@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:newsApp/bean/MovieEntity.dart';
+import 'package:newsApp/content/news_detail.dart';
 import 'package:newsApp/utils/DbProvider.dart';
 import 'package:newsApp/utils/HttpUtil.dart';
 import 'package:newsApp/utils/eventBus.dart';
@@ -103,7 +103,7 @@ class MovieListWidget extends State<TheaterMovie>
       child: new Center(
         child: new Opacity(
           opacity: isPerformingRequest ? 1.0 : 0.0,
-          child: new CupertinoActivityIndicator(),
+          child: new CircularProgressIndicator(),
         ),
       ),
     );
@@ -133,7 +133,7 @@ class MovieListWidget extends State<TheaterMovie>
       );
       return list;
     } else {
-      return new CupertinoActivityIndicator();
+      return new CircularProgressIndicator();
     }
   }
 
@@ -273,7 +273,8 @@ class MovieListWidget extends State<TheaterMovie>
       child: new InkWell(
         child: row,
         onTap: () {
-          print(subject.title);
+          Navigator.push(context,
+              new MaterialPageRoute(builder: (context)=> NewsDetail(subject)));
         },
       ),
     );
