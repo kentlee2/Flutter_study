@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:dio/dio.dart';
 import 'package:newsApp/bean/MovieEntity.dart';
 import 'package:newsApp/content/news_detail.dart';
@@ -19,7 +20,7 @@ class MovieListWidget extends State<TheaterMovie>
   DbProvider db = new DbProvider();
 
   String loadUrl =
-      "https://douban-api.now.sh/v2/movie/in_theaters"; //http://douban.uieee.com
+      "https://douban-api.now.sh/v2/movie/in_theaters?start=11&count=20"; //http://douban.uieee.com
   bool isPerformingRequest = false;
   List<MovidBean> movieList = new List<MovidBean>();
   List<MovieSubject> subjects = [];
@@ -88,6 +89,7 @@ class MovieListWidget extends State<TheaterMovie>
         }
 
         print(result);
+        print("当前数：$start");
         setState(() {
           subjects.addAll(entity.subjects);
           isPerformingRequest = false;
@@ -102,9 +104,8 @@ class MovieListWidget extends State<TheaterMovie>
       padding: const EdgeInsets.all(8.0),
       child: new Center(
         child: new Opacity(
-          opacity: isPerformingRequest ? 1.0 : 0.0,
-          child: new CircularProgressIndicator(),
-        ),
+            opacity: isPerformingRequest ? 1.0 : 0.0,
+            child: CupertinoActivityIndicator()),
       ),
     );
   }
@@ -133,7 +134,7 @@ class MovieListWidget extends State<TheaterMovie>
       );
       return list;
     } else {
-      return new CircularProgressIndicator();
+      return   CupertinoActivityIndicator();
     }
   }
 
@@ -144,7 +145,6 @@ class MovieListWidget extends State<TheaterMovie>
         alreadySaved = true;
       }
     });
-    print(alreadySaved);
 
     var avatars = List.generate(subject.casts.length, (i) {
       if (subject.casts[i].avatars != null) {
@@ -169,7 +169,9 @@ class MovieListWidget extends State<TheaterMovie>
     List avatarLists = new List<String>();
     subject.casts.forEach((d) {
       var name = d.avatars;
-      avatarLists.add(name.medium);
+      if(name!=null) {
+        avatarLists.add(name.medium);
+      }
     });
     var row = Container(
       margin: EdgeInsets.all(4.0),
@@ -274,7 +276,7 @@ class MovieListWidget extends State<TheaterMovie>
         child: row,
         onTap: () {
           Navigator.push(context,
-              new MaterialPageRoute(builder: (context)=> NewsDetail(subject)));
+              new MaterialPageRoute(builder: (context) => NewsDetail(subject)));
         },
       ),
     );

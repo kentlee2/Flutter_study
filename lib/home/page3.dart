@@ -5,7 +5,7 @@ class page3 extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<page3>  with AutomaticKeepAliveClientMixin{
+class _LoginPageState extends State<page3> with AutomaticKeepAliveClientMixin {
   /**
    * 利用FocusNode和FocusScopeNode来控制焦点
    * 可以通过FocusNode.of(context)来获取widget树中默认的FocusScopeNode
@@ -14,11 +14,13 @@ class _LoginPageState extends State<page3>  with AutomaticKeepAliveClientMixin{
   FocusNode passwordFocusNode = new FocusNode();
   FocusScopeNode focusScopeNode = new FocusScopeNode();
   bool isShowPassWord = false;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     return buildSignInTextForm();
   }
+
   /**
    * 点击控制密码是否显示
    */
@@ -27,6 +29,7 @@ class _LoginPageState extends State<page3>  with AutomaticKeepAliveClientMixin{
       isShowPassWord = !isShowPassWord;
     });
   }
+
   Widget buildSignInTextForm() {
     return new Scaffold(
       appBar: AppBar(
@@ -40,74 +43,77 @@ class _LoginPageState extends State<page3>  with AutomaticKeepAliveClientMixin{
         height: 190,
         child: new Form(
             child: new Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 25, right: 25, top: 20, bottom: 20),
-                    child: new TextFormField(
-                      focusNode: emailFocusNode,
-                      onEditingComplete: () {
-                        if(focusScopeNode==null){
-                          focusScopeNode==FocusScope.of(context);
-                        }
-                        focusScopeNode.requestFocus(passwordFocusNode);
-                      },
-                      decoration: new InputDecoration(
-                          icon: new Icon(Icons.email,color: Colors.black,),
-                          hintText: "Email Address",
-                          border: InputBorder.none
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 25, right: 25, top: 20, bottom: 20),
+                child: new TextFormField(
+                  focusNode: emailFocusNode,
+                  onEditingComplete: () {
+                    if (focusScopeNode == null) {
+                      focusScopeNode == FocusScope.of(context);
+                    }
+                    focusScopeNode.requestFocus(passwordFocusNode);
+                  },
+                  decoration: new InputDecoration(
+                      icon: new Icon(
+                        Icons.email,
+                        color: Colors.black,
                       ),
-                      style: new TextStyle(fontSize: 16,color: Colors.black),
-                      validator: (value){
-                        if(value.isEmpty){
-                          return "Email can not be empty!";
-                        }
-                      },
-                      onSaved: (value){
-
-                      },
-
-                    ),
-                  ),
+                      hintText: "Email Address",
+                      border: InputBorder.none),
+                  style: new TextStyle(fontSize: 16, color: Colors.black),
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "Email can not be empty!";
+                    }
+                  },
+                  onSaved: (value) {},
                 ),
-                new Container(
-                  height: 1,
-                  width: 250,
-                  color: Colors.grey[400],
-                ),
-                Flexible(
-                  child: Padding(
-                    padding:const EdgeInsets.only(left: 25,right: 25,top: 20),
-                    child:new TextFormField(
-                      focusNode: passwordFocusNode,
-                      decoration: new InputDecoration(
-                          icon: new Icon(Icons.lock,color: Colors.black,),
-                          hintText: "password",
-                          border: InputBorder.none,
-                          suffixIcon: new IconButton(icon: new Icon(Icons.remove_red_eye,color: Colors.black,),
-                              onPressed: showPassWord)
+              ),
+            ),
+            new Container(
+              height: 1,
+              width: 250,
+              color: Colors.grey[400],
+            ),
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 25, right: 25, top: 20),
+                child: new TextFormField(
+                  focusNode: passwordFocusNode,
+                  decoration: new InputDecoration(
+                      icon: new Icon(
+                        Icons.lock,
+                        color: Colors.black,
                       ),
-                      obscureText: !isShowPassWord,
-                      style: new TextStyle(fontSize: 16,color: Colors.black),
-                      validator: (value){
-                        if(value==null || value.isEmpty || value.length<6){
-                          return "Password'length must longer than 6!";
-                        }
-                      },
-                      onSaved: (value){
-
-                      },
-                    ) ,
-                  ),
-                )
-              ],
-            )),
+                      hintText: "password",
+                      border: InputBorder.none,
+                      suffixIcon: new IconButton(
+                          icon: new Icon(
+                            Icons.remove_red_eye,
+                            color: Colors.black,
+                          ),
+                          onPressed: showPassWord)),
+                  obscureText: !isShowPassWord,
+                  style: new TextStyle(fontSize: 16, color: Colors.black),
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.length < 6) {
+                      return "Password'length must longer than 6!";
+                    }
+                  },
+                  onSaved: (value) {},
+                ),
+              ),
+            )
+          ],
+        )),
       ),
     );
-
   }
+
   @override
   bool get wantKeepAlive => true;
 }
