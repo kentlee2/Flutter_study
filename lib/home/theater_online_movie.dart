@@ -3,11 +3,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:dio/dio.dart';
 import 'package:newsApp/bean/MovieEntity.dart';
 import 'package:newsApp/content/news_detail.dart';
+import 'package:newsApp/utils/Api.dart';
 import 'package:newsApp/utils/DbProvider.dart';
 import 'package:newsApp/utils/HttpUtil.dart';
+import 'package:newsApp/utils/Values.dart';
 import 'package:newsApp/utils/eventBus.dart';
 
 class TheaterMovie extends StatefulWidget {
+  final int showType;
+
+  TheaterMovie(this.showType);
+
   @override
   State<StatefulWidget> createState() {
     return MovieListWidget();
@@ -27,6 +33,7 @@ class MovieListWidget extends State<TheaterMovie>
   String title = '';
   int start = 1;
   int count = 20;
+  int total;
 
   @override
   void initState() {
@@ -36,7 +43,8 @@ class MovieListWidget extends State<TheaterMovie>
     //滑动到底了自动加载更多
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
+              _scrollController.position.maxScrollExtent &&
+          start <= subjects.length) {
         start = start + 10;
         _loadMoreData();
       }
@@ -50,15 +58,22 @@ class MovieListWidget extends State<TheaterMovie>
   }
 
   void loadData() async {
-    Response response = await Dio()
-        .get(loadUrl, queryParameters: {"start": start, "count": count});
+//    Response response = await Dio()
+//        .get(loadUrl, queryParameters: {"start": start, "count": count});
     var data = {'start': start, 'count': count};
-    var response2 = await HttpUtil.getInstance().get("in_theaters", data: data);
-    print(response2);
+    var response;
+    if (widget.showType == Values.typeOnline) {
+      response = await HttpUtil.getInstance().get(API.baseUrl+"in_theaters", data: data);
+      print(response);
+    } else {
+      response = await HttpUtil.getInstance().get(API.baseUrl+"coming_soon", data: data);
+      print(response);
+    }
     var result = new Map<String, dynamic>.from(response.data);
 
     //FlutterJsonBeanFactory插件生成
     MovieEntity entity = new MovieEntity.fromJson(result);
+    total = entity.total;
     movieList = await db.getData();
     print("请求:" + loadUrl);
     print("start:" + "$start");
@@ -73,8 +88,15 @@ class MovieListWidget extends State<TheaterMovie>
   _loadMoreData() async {
     if (!isPerformingRequest) {
       setState(() => isPerformingRequest = true);
-      Response response = await Dio()
-          .get(loadUrl, queryParameters: {"start": start, "count": count});
+      var data = {'start': start, 'count': count};
+      var response;
+      if (widget.showType == Values.typeOnline) {
+        response = await HttpUtil.getInstance().get(API.baseUrl+"in_theaters", data: data);
+        print(response);
+      } else {
+        response = await HttpUtil.getInstance().get(API.baseUrl+"coming_soon", data: data);
+        print(response);
+      }
       if (response.statusCode == 200) {
         var result = new Map<String, dynamic>.from(response.data);
         MovieEntity entity = new MovieEntity.fromJson(result);
@@ -134,7 +156,7 @@ class MovieListWidget extends State<TheaterMovie>
       );
       return list;
     } else {
-      return   CupertinoActivityIndicator();
+      return CupertinoActivityIndicator();
     }
   }
 
@@ -169,7 +191,7 @@ class MovieListWidget extends State<TheaterMovie>
     List avatarLists = new List<String>();
     subject.casts.forEach((d) {
       var name = d.avatars;
-      if(name!=null) {
+      if (name != null) {
         avatarLists.add(name.medium);
       }
     });
@@ -180,7 +202,7 @@ class MovieListWidget extends State<TheaterMovie>
           ClipRRect(
             borderRadius: BorderRadius.circular(4.0),
             child: Image.network(
-              subject.images.large,
+              subject.images.medium,
               width: 100.0,
               height: 150,
               fit: BoxFit.fill,

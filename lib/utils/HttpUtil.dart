@@ -9,7 +9,7 @@ class HttpUtil {
   BaseOptions options;
 
   CancelToken cancelToken = new CancelToken();
-  static String baseUrl = "https://douban-api.now.sh/v2/movie/";
+
 
   static HttpUtil getInstance() {
     if (null == instance) instance = new HttpUtil();
@@ -23,7 +23,7 @@ class HttpUtil {
     //BaseOptions、Options、RequestOptions 都可以配置参数，优先级别依次递增，且可以根据优先级别覆盖参数
     options = new BaseOptions(
       //请求基地址,可以包含子路径
-      baseUrl: baseUrl,
+//      baseUrl: baseUrl,
       //连接服务器超时时间，单位是毫秒.
       connectTimeout: 10000,
       //响应流上前后两次接受到数据的间隔，单位为毫秒。
@@ -36,7 +36,7 @@ class HttpUtil {
       //请求的Content-Type，默认值是[ContentType.json]. 也可以用ContentType.parse("application/x-www-form-urlencoded")
       contentType: ContentType.json,
       //表示期望以那种格式(方式)接受响应数据。接受三种类型 `json`, `stream`, `plain`, `bytes`. 默认值是 `json`,
-//      responseType: ResponseType.plain,
+      responseType: ResponseType.json,
     );
 
     dio = new Dio(options);
@@ -48,10 +48,12 @@ class HttpUtil {
     dio.interceptors
         .add(InterceptorsWrapper(onRequest: (RequestOptions options) {
       print("请求之前");
+
       // Do something before request is sent
       return options; //continue
     }, onResponse: (Response response) {
       print("响应之前");
+
       // Do something with response data
       return response; // continue
     }, onError: (DioError e) {
@@ -72,7 +74,7 @@ class HttpUtil {
       print('get success---------${response.statusCode}');
       print('get success---------${response.data}');
       print('get success---------${response.request}');
-
+      print('get 请求地址---------$url');
 //      response.data; 响应体
 //      response.headers; 响应头
 //      response.request; 请求体

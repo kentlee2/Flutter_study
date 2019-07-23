@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'home/TheaterMovie.dart';
+import 'package:newsApp/utils/Values.dart';
+import 'home/theater_online_movie.dart';
 import 'home/Collect.dart';
-import 'home/page3.dart';
+import 'home/theater_coming_soon.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -14,15 +15,16 @@ class HomePage extends StatefulWidget {
 
 class _MyHomeAppState extends State<HomePage>
     with SingleTickerProviderStateMixin {
+
   PageController mPageController = PageController(initialPage: 0);
   TabController mTabController;
   bool isPageCanChanged = true;
   List<Tab> titleTabs = <Tab>[
-    Tab(text: '院线'),
-    Tab(text: '喜欢'),
-    Tab(text: '发现'),
+    Tab(text: '院线热映'),
+    Tab(text: '即将上映'),
+    Tab(text: '我的收藏'),
   ];
-  List<Widget> tabViews = [TheaterMovie(), Collect(), page3()];
+  List<Widget> tabViews = [TheaterMovie(Values.typeOnline), TheaterMovie(Values.typeSoon), Collect()];
 
   @override
   void initState() {
