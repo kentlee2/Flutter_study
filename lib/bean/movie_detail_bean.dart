@@ -330,7 +330,7 @@ class MovieDetailBeanClip {
 }
 
 class MovieDetailBeanRating {
-  double average;
+  var average;
   int min;
   int max;
   MovieDetailBeanRatingDetails details;

@@ -298,7 +298,7 @@ class MovieListWidget extends State<TheaterMovie>
         child: row,
         onTap: () {
           Navigator.push(context,
-              new MaterialPageRoute(builder: (context) => NewsDetail(subject)));
+              new MaterialPageRoute(builder: (context) => NewsDetail(subject.title,subject.id)));
         },
       ),
     );

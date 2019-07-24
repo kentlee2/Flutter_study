@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:newsApp/content/news_detail.dart';
 import 'package:newsApp/utils/DbProvider.dart';
 import 'package:newsApp/utils/eventBus.dart';
 
@@ -38,7 +39,7 @@ class LocalListWidget extends State<Collect>
               backgroundColor: Colors.white10,
               backgroundImage: NetworkImage(avatarStr[i])));
     });
-    return Container(
+    var row = Container(
       child: Container(
         margin: EdgeInsets.only(left: 8.0),
         height: 150.0,
@@ -55,49 +56,58 @@ class LocalListWidget extends State<Collect>
             ),
             Expanded(
                 child: Container(
-              margin: EdgeInsets.only(left: 8.0),
-              height: 150.0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                //电影名称
-                children: <Widget>[
-                  Text(
-                    bean.title,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    maxLines: 1,
-                  ),
-
-                  Row(
+                  margin: EdgeInsets.only(left: 8.0),
+                  height: 150.0,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    //电影名称
                     children: <Widget>[
                       Text(
-                        '豆瓣评分： ${bean.rate}',
-                        style: TextStyle(fontSize: 16, color: Colors.red),
+                        bean.title,
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                        maxLines: 1,
                       ),
+
+                      Row(
+                        children: <Widget>[
+                          Text(
+                            '豆瓣评分： ${bean.rate}',
+                            style: TextStyle(fontSize: 16, color: Colors.red),
+                          ),
+                        ],
+                      ),
+                      //豆瓣评分
+
+                      //类型
+                      Text("类型：${bean.movieType}"),
+                      //导演
+                      Text('导演：${bean.director}'),
+                      //演员
+                      Container(
+                        margin: EdgeInsets.only(top: 8),
+                        child: Row(
+                          children: <Widget>[
+                            Text('主演：'),
+                            Row(
+                              children: avatars,
+                            )
+                          ],
+                        ),
+                      )
                     ],
                   ),
-                  //豆瓣评分
-
-                  //类型
-                  Text("类型：${bean.movieType}"),
-                  //导演
-                  Text('导演：${bean.director}'),
-                  //演员
-                  Container(
-                    margin: EdgeInsets.only(top: 8),
-                    child: Row(
-                      children: <Widget>[
-                        Text('主演：'),
-                        Row(
-                          children: avatars,
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ))
+                ))
           ],
         ),
+      ),
+    );
+    return new Card(
+      child: new InkWell(
+        child: row,
+        onTap: () {
+          Navigator.push(context,
+              new MaterialPageRoute(builder: (context) => NewsDetail(bean.title,bean.id)));
+        },
       ),
     );
   }
