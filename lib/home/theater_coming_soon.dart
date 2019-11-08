@@ -5,7 +5,8 @@ class MovieSoon extends StatefulWidget {
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<MovieSoon> with AutomaticKeepAliveClientMixin {
+class _LoginPageState extends State<MovieSoon>
+    with AutomaticKeepAliveClientMixin {
   /**
    * 利用FocusNode和FocusScopeNode来控制焦点
    * 可以通过FocusNode.of(context)来获取widget树中默认的FocusScopeNode

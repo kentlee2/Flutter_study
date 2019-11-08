@@ -26,7 +26,6 @@ class DetailTitleWidget extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(6.0)),
           ),
           Padding(padding: EdgeInsets.only(left: 8)),
-
           Expanded(
               child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,13 +58,10 @@ class DetailTitleWidget extends StatelessWidget {
                           .toInt()
                           .toString() +
                       "人评价)"),
-
                 ],
               ),
-
             ],
-          )
-          )
+          ))
         ],
       ),
     );

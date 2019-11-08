@@ -211,7 +211,6 @@ class MovieListWidget extends State<TheaterMovie>
           Expanded(
               child: Container(
             margin: EdgeInsets.only(left: 8.0),
-            height: 150.0,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               //电影名称

@@ -64,7 +64,9 @@ class MovidBean {
   String movieType;
   String director;
   String actor;
-  MovidBean(var this.id, this.title, var this.rate, this.imgurl,this.movieType,this.director,this.actor);
+
+  MovidBean(var this.id, this.title, var this.rate, this.imgurl, this.movieType,
+      this.director, this.actor);
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 ///点击图片放大显示
 class AnimalPhoto {
   AnimalPhoto.show(BuildContext context, String url, {double width}) {

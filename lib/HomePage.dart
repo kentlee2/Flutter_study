@@ -15,7 +15,6 @@ class HomePage extends StatefulWidget {
 
 class _MyHomeAppState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-
   PageController mPageController = PageController(initialPage: 0);
   TabController mTabController;
   bool isPageCanChanged = true;
@@ -24,7 +23,11 @@ class _MyHomeAppState extends State<HomePage>
     Tab(text: '即将上映'),
     Tab(text: '我的收藏'),
   ];
-  List<Widget> tabViews = [TheaterMovie(Values.typeOnline), TheaterMovie(Values.typeSoon), Collect()];
+  List<Widget> tabViews = [
+    TheaterMovie(Values.typeOnline),
+    TheaterMovie(Values.typeSoon),
+    Collect()
+  ];
 
   @override
   void initState() {

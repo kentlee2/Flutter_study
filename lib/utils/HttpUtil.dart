@@ -10,7 +10,6 @@ class HttpUtil {
 
   CancelToken cancelToken = new CancelToken();
 
-
   static HttpUtil getInstance() {
     if (null == instance) instance = new HttpUtil();
     return instance;

@@ -4,11 +4,9 @@ import 'DbProvider.dart';
 
 EventBus eventBus = new EventBus();
 
-class TransEvent{
-
+class TransEvent {
   MovidBean bean;
   bool isAdd;
 
-  TransEvent(this.bean,this.isAdd);
-
+  TransEvent(this.bean, this.isAdd);
 }

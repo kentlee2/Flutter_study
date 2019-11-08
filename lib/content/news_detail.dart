@@ -104,7 +104,7 @@ class _DetailPageState extends State<NewsDetail> {
                 var commentBean = detailBean.popularComments[index];
                 return Container(
                   child: Padding(
-                    padding: EdgeInsets.only(top: 8,bottom: 8),
+                    padding: EdgeInsets.only(top: 8, bottom: 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -112,13 +112,13 @@ class _DetailPageState extends State<NewsDetail> {
                           children: <Widget>[
                             CircleAvatar(
                               backgroundImage:
-                              NetworkImage(commentBean.author.avatar),
+                                  NetworkImage(commentBean.author.avatar),
                             ),
                             Column(
                               children: <Widget>[
                                 Text(commentBean.author.name,
                                     style:
-                                    TextStyle(fontWeight: FontWeight.bold)),
+                                        TextStyle(fontWeight: FontWeight.bold)),
                                 RatingBar(
                                   commentBean.rating.value /
                                       commentBean.rating.max *
@@ -146,7 +146,6 @@ class _DetailPageState extends State<NewsDetail> {
                         Text(commentBean.content),
                       ],
                     ),
-
                   ),
                 );
               },
