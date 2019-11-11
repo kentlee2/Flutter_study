@@ -60,25 +60,12 @@ class MovieListWidget extends State<TheaterMovie>
   void loadData() async {
 //    Response response = await Dio()
 //        .get(loadUrl, queryParameters: {"start": start, "count": count});
-    var data = {'start': start, 'count': count};
-    var response;
-    if (widget.showType == Values.typeOnline) {
-      response = await HttpUtil.getInstance().get(API.baseUrl+"in_theaters", data: data);
-      print(response);
-    } else {
-      response = await HttpUtil.getInstance().get(API.baseUrl+"coming_soon", data: data);
-      print(response);
-    }
-    var result = new Map<String, dynamic>.from(response.data);
 
-    //FlutterJsonBeanFactory插件生成
-    MovieEntity entity = new MovieEntity.fromJson(result);
+    MovieEntity entity = await API.getMovieList(widget.showType, start, count);
     total = entity.total;
     movieList = await db.getData();
-    print("请求:" + loadUrl);
     print("start:" + "$start");
     print("count:" + "$count");
-    print(result);
     setState(() {
       title = entity.title;
       subjects = entity.subjects;
@@ -91,10 +78,12 @@ class MovieListWidget extends State<TheaterMovie>
       var data = {'start': start, 'count': count};
       var response;
       if (widget.showType == Values.typeOnline) {
-        response = await HttpUtil.getInstance().get(API.baseUrl+"in_theaters", data: data);
+        response = await HttpUtil.getInstance()
+            .get(API.baseUrl + "in_theaters", data: data);
         print(response);
       } else {
-        response = await HttpUtil.getInstance().get(API.baseUrl+"coming_soon", data: data);
+        response = await HttpUtil.getInstance()
+            .get(API.baseUrl + "coming_soon", data: data);
         print(response);
       }
       if (response.statusCode == 200) {
@@ -143,7 +132,6 @@ class MovieListWidget extends State<TheaterMovie>
         controller: _scrollController,
         //列表项构造器
         itemBuilder: (BuildContext context, int index) {
-          print("滑动到了:$index");
           if (index == subjects.length - 1) {
             return _buildProgressIndicator();
           }
@@ -296,8 +284,10 @@ class MovieListWidget extends State<TheaterMovie>
       child: new InkWell(
         child: row,
         onTap: () {
-          Navigator.push(context,
-              new MaterialPageRoute(builder: (context) => NewsDetail(subject.title,subject.id)));
+          Navigator.push(
+              context,
+              new MaterialPageRoute(
+                  builder: (context) => NewsDetail(subject.title, subject.id)));
         },
       ),
     );

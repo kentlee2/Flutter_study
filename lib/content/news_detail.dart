@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:newsApp/bean/MovieEntity.dart';
 import 'package:newsApp/bean/movie_detail_bean.dart';
+import 'package:newsApp/content/Video_info.dart';
 import 'package:newsApp/utils/Api.dart';
 import 'package:newsApp/widget/animal_photo.dart';
 import 'package:newsApp/widget/rating_bar.dart';
@@ -45,14 +45,11 @@ class _DetailPageState extends State<NewsDetail> {
     if (detailBean != null) {
       return Scaffold(
           backgroundColor: pickColor,
+          appBar:AppBar(
+            title: Text("电影"),
+          ) ,
           body: CustomScrollView(
             slivers: <Widget>[
-              SliverAppBar(
-                title: Text("电影"),
-                centerTitle: true,
-                pinned: true,
-                backgroundColor: Colors.blue,
-              ),
               SliverToBoxAdapter(child: DetailTitleWidget(detailBean)),
               sliverTags(),
               SliverToBoxAdapter(
@@ -235,7 +232,10 @@ class _DetailPageState extends State<NewsDetail> {
                         ],
                       ),
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context,
+                          new MaterialPageRoute(builder: (context) => VideoInfo(detailBean.trailers[0].resourceUrl)));
+                    },
                   );
                 } else {
                   return showBigImg(
@@ -288,7 +288,7 @@ class _DetailPageState extends State<NewsDetail> {
           padding: EdgeInsets.only(left: 10),
         ),
         Container(
-            height: 185,
+            height: detailBean.casts.isEmpty?0:185,
             padding: EdgeInsets.only(left: 10, right: 10),
             child: ListView.builder(
               itemBuilder: (BuildContext context, int index) {
@@ -303,7 +303,9 @@ class _DetailPageState extends State<NewsDetail> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(4),
                                   child: Image.network(
-                                    detailBean.casts[index].avatars.medium,
+                                    detailBean.casts[index].avatars.medium!=null?detailBean.casts[index].avatars.medium:Image(
+                                        image: AssetImage("images/avatar.png"),
+                                    ),
                                     fit: BoxFit.cover,
                                     width: 100,
                                     height: 150,
