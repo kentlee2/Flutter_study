@@ -45,9 +45,9 @@ class _DetailPageState extends State<NewsDetail> {
     if (detailBean != null) {
       return Scaffold(
           backgroundColor: pickColor,
-          appBar:AppBar(
+          appBar: AppBar(
             title: Text("电影"),
-          ) ,
+          ),
           body: CustomScrollView(
             slivers: <Widget>[
               SliverToBoxAdapter(child: DetailTitleWidget(detailBean)),
@@ -107,34 +107,47 @@ class _DetailPageState extends State<NewsDetail> {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(commentBean.author.avatar),
+                            SizedBox(
+                              width: 200,
+                              child: Row(
+                                children: <Widget>[
+                                  CircleAvatar(
+                                    backgroundImage:
+                                        NetworkImage(commentBean.author.avatar),
+                                  ),
+                                  Column(
+                                    children: <Widget>[
+                                      Text(commentBean.author.name,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      RatingBar(
+                                        commentBean.rating.value /
+                                            commentBean.rating.max *
+                                            10,
+                                        size: 11,
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                            Column(
-                              children: <Widget>[
-                                Text(commentBean.author.name,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                RatingBar(
-                                  commentBean.rating.value /
-                                      commentBean.rating.max *
-                                      10,
-                                  size: 11,
-                                )
-                              ],
-                            ),
+                            Padding(
+                                padding: EdgeInsets.only(
+                                    left: MediaQuery.of(context).size.width -
+                                        300)),
                             Row(
                               //赞的数量
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
                                 Image.asset(
-                                  'assets/images/ic_vote_normal_large.png',
+                                  'images/ic_vote_normal_large.png',
                                   width: 20.0,
                                   height: 20.0,
                                 ),
                                 Text(
                                   '${getUsefulCount(commentBean.usefulCount)}',
-                                  style: TextStyle(color: Color(0x88fffffff)),
+                                  style:
+                                      TextStyle(color: CupertinoColors.black),
                                 )
                               ],
                             )
@@ -233,8 +246,11 @@ class _DetailPageState extends State<NewsDetail> {
                       ),
                     ),
                     onTap: () {
-                      Navigator.push(context,
-                          new MaterialPageRoute(builder: (context) => VideoInfo(detailBean.trailers[0].resourceUrl)));
+                      Navigator.push(
+                          context,
+                          new MaterialPageRoute(
+                              builder: (context) => VideoInfo(
+                                  detailBean.trailers[0].resourceUrl)));
                     },
                   );
                 } else {
@@ -288,7 +304,7 @@ class _DetailPageState extends State<NewsDetail> {
           padding: EdgeInsets.only(left: 10),
         ),
         Container(
-            height: detailBean.casts.isEmpty?0:185,
+            height: detailBean.casts.isEmpty ? 0 : 185,
             padding: EdgeInsets.only(left: 10, right: 10),
             child: ListView.builder(
               itemBuilder: (BuildContext context, int index) {
@@ -303,9 +319,13 @@ class _DetailPageState extends State<NewsDetail> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(4),
                                   child: Image.network(
-                                    detailBean.casts[index].avatars.medium!=null?detailBean.casts[index].avatars.medium:Image(
-                                        image: AssetImage("images/avatar.png"),
-                                    ),
+                                    detailBean.casts[index].avatars.medium !=
+                                            null
+                                        ? detailBean.casts[index].avatars.medium
+                                        : Image(
+                                            image:
+                                                AssetImage("images/avatar.png"),
+                                          ),
                                     fit: BoxFit.cover,
                                     width: 100,
                                     height: 150,
